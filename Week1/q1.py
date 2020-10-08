@@ -30,10 +30,20 @@ def alt():
                 j = 0
             print(str(i * j).ljust(2), end='   ')
 
+def sol():
+    for i in range(1,6):
+        for j in range(1,6):
+            r = (i*j) % 2
+            if (r == 0) :
+                print(str(0).ljust(3), end="")
+            else :
+                print(str(i*j).ljust(3), end="")
+        print("")
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # print_hi('PyCharm')
-    alt()
+    sol()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
