@@ -43,42 +43,59 @@ def main():
     #assign X and y
     X = df[result].values
     y = df['target'].values
-    flowers = iris.target_names
+    variety = iris.target_names
 
     #split the dataset into X (the features) and y (the target)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
-    #plt.scatter(iris['data'][:, 0], iris['data'][:, 1])
+    # plot a 3 x 2 figure comparing the feature against each other
+    plt.figure()
 
+    plt.subplot(321)
+    plt.scatter(df['sepal length (cm)'], df['sepal width (cm)'], c=y, s=50)
 
+    plt.subplot(322)
+    plt.scatter(df['sepal length (cm)'], df['petal length (cm)'], c=y, s=50)
 
+    plt.subplot(323)
+    plt.scatter(df['sepal length (cm)'], df['petal width (cm)'], c=y, s=50)
 
+    plt.subplot(324)
+    plt.scatter(df['sepal width (cm)'], df['petal length (cm)'], c=y, s=50)
+
+    plt.subplot(325)
+    plt.scatter(df['sepal width (cm)'], df['petal width (cm)'], c=y, s=50)
+
+    plt.subplot(326)
+    plt.scatter(df['petal length (cm)'], df['petal width (cm)'], c=y, s=50)
 
     #build svm model and fit to the training data
-    svm_model = SVC(kernel='linear', C=100, decision_function_shape='ovo').fit(X, y)
+    svm_model = SVC(gamma='scale', decision_function_shape='ovo')
+    svm_model.fit(X_train, y_train)
 
     #predict values for the testing data
     y_pred = svm_model.predict(X_test)
     #print(y_test)
     #print(y_pred)
 
+    # put the results into a DataFrame and print side-by-side
+    output = pd.DataFrame(data=np.c_[y_test, y_pred])
+    print(output)
+
     #print accuracy
     print('Accuracy: %.2f' % accuracy_score(y_test, y_pred))
 
-    #build confusion matrix
+    # find the confusion matrix, normalise and print
     cm = confusion_matrix(y_test, y_pred)
     np.set_printoptions(precision=2)
-    print('Confusion matrix, without normalization')
-    print(cm)
-
-    # normalised confusion matrix
     cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
     print('Normalized confusion matrix')
     print(cm_normalized)
+
+    # confusion matric as a figure
     plt.figure()
-    plot_confusion_matrix(cm_normalized, flowers, title='Normalized confusion matrix')
+    plot_confusion_matrix(cm_normalized, variety, title='Normalized confusion matrix')
     plt.show()
-    print(svm_model.get_params())
 
 if __name__ == '__main__':
     main()
